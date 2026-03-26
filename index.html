@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NutriCheck — Know What You Eat</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="logo">
+    <span class="l1">Nutri</span><span class="l2">Check</span><span class="l3">™</span>
+  </a>
+  <span class="nav-tagline">Know what you eat. Own your health.</span>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge">🌿 Your Food. Your Health. Your Choice.</div>
+  <h1>You Are <span class="g">What You Eat</span><br/>Are You <span class="p">Sure About That?</span></h1>
+  <p>Discover the truth behind your daily food. From fresh vegetables to packaged snacks — understand what's really going into your body.</p>
+  <a class="hero-cta" href="#explore-categories">🔎 Search foods</a>
+</section>
+
+<!-- INTRO -->
+<section class="intro-section">
+  <div class="intro-section-title">
+    <h2>The <span>Truth About Food</span></h2>
+    <p>What the food industry doesn't want you to know.</p>
+  </div>
+  <div class="intro-grid">
+    <div class="intro-card">
+      <div class="icon">🥗</div>
+      <h3>Why Nutrition Matters</h3>
+      <p>Every cell in your body is built from what you eat. Proper nutrition fuels your brain, repairs tissues, regulates hormones, and determines your energy levels. A poor diet doesn't just make you tired — it silently builds the foundation for chronic disease over years.</p>
+    </div>
+    <div class="intro-card">
+      <div class="icon">🍽️</div>
+      <h3>The Ideal Daily Diet</h3>
+      <p>A balanced plate should include 50% vegetables & fruits, 25% whole grains, and 25% lean protein. Most people today eat the exact opposite — 70% ultra-processed foods, leaving critical vitamins, minerals, and fiber severely lacking.</p>
+    </div>
+    <div class="intro-card danger">
+      <div class="icon">🏭</div>
+      <h3>How Food Companies Harm Us</h3>
+      <p>Big food corporations engineer products to be hyper-palatable using excess sugar, salt, and fat. They use artificial colors, preservatives, and flavor enhancers that are addictive by design. Many ingredients banned in Europe are still sold freely in other markets.</p>
+    </div>
+    <div class="intro-card warning">
+      <div class="icon">⚠️</div>
+      <h3>The Ultra-Processed Epidemic</h3>
+      <p>Over 60% of calories consumed in developed nations come from ultra-processed foods. These are linked to obesity, type 2 diabetes, heart disease, depression, and even certain cancers. The food industry spends billions marketing these products to children.</p>
+    </div>
+    <div class="intro-card danger">
+      <div class="icon">🧪</div>
+      <h3>Hidden Ingredients to Watch</h3>
+      <p>High-fructose corn syrup, trans fats, MSG, artificial sweeteners, carrageenan, BHA/BHT, and caramel coloring (4-MEI) are common in packaged foods. Many have been linked to inflammation, gut damage, hormonal disruption, and cancer in studies.</p>
+    </div>
+    <div class="intro-card">
+      <div class="icon">💪</div>
+      <h3>Take Back Your Health</h3>
+      <p>The good news: switching to whole, minimally processed foods can reverse many diet-related conditions within weeks. Understanding nutrition labels and knowing what's in your food is the first and most powerful step toward lasting health.</p>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats-bar">
+  <div class="stat"><div class="num">60%</div><div class="label">Calories from ultra-processed food</div></div>
+  <div class="stat"><div class="num">17L+</div><div class="label">Deaths/year in India linked to poor diet</div></div>
+  <div class="stat"><div class="num">80%</div><div class="label">Chronic diseases are diet-preventable</div></div>
+  <div class="stat"><div class="num">3x</div><div class="label">More sugar in packaged food vs. 1970s</div></div>
+</div>
+
+<!-- CATEGORIES -->
+<div class="section-title" id="explore-categories">
+  <h2>Explore <span>Food Categories</span></h2>
+  <p>Click any category to see detailed nutrition info, benefits, and health warnings.</p>
+</div>
+
+<!-- GLOBAL SEARCH -->
+<div class="global-search-wrap">
+  <div class="global-search-box">
+    <span class="gs-icon">🔍</span>
+    <input type="text" id="globalSearch" placeholder="Search any food item across all categories..." oninput="handleGlobalSearch()" autocomplete="off" />
+    <button class="gs-clear" id="gsClear" onclick="clearGlobalSearch()" style="display:none">✕</button>
+  </div>
+  <div id="globalResults" class="global-results" style="display:none"></div>
+</div>
+
+<div class="category-grid" id="categoryGrid"></div>
+
+<!-- ITEM MODAL -->
+<div id="itemModal" class="modal-overlay" onclick="closeModalOutside(event)">
+  <div class="modal-box" id="modalBox"></div>
+</div>
+
+<footer>
+  <div class="footer-logo">
+    <span class="l1">Nutri</span><span class="l2">Check</span><span class="l3">™</span>
+  </div>
+  <p><span class="copy">© 2026 NutriCheck.</span> All rights reserved.</p>
+  <p class="disclaimer">Data is for educational purposes only. Consult a registered nutritionist for personalized dietary advice.</p>
+</footer>
+
+<script src="data.js"></script>
+<script>
+  // ── Category cards ──────────────────────────────────────────────
+  const grid = document.getElementById('categoryGrid');
+  categories.forEach(cat => {
+    grid.innerHTML += `
+      <a href="category.html?cat=${cat.id}" class="cat-card">
+        <span class="cat-icon">${cat.icon}</span>
+        <h3>${cat.name}</h3>
+        <p>${cat.description}</p>
+        <span class="btn">Check Nutrition →</span>
+      </a>`;
+  });
+
+  // ── Shared card renderer (mirrors category.html logic) ──────────
+  let ddCounter = 0;
+
+  function dropdown(icon, label, content) {
+    const id = `mdd_${ddCounter++}`;
+    return `
+      <div class="dropdown" id="${id}">
+        <button class="dropdown-toggle" onclick="toggleDD('${id}')">
+          <span class="dtitle"><span class="dicon">${icon}</span><span class="dlabel">${label}</span></span>
+          <span class="dropdown-arrow">▼</span>
+        </button>
+        <div class="dropdown-content">${content}</div>
+      </div>`;
+  }
+
+  function nutritionTable(nutrition) {
+    return `<table class="nutrition-table">
+      <tr><th>Nutrient</th><th>Amount</th></tr>
+      ${Object.entries(nutrition).map(([k,v]) => `<tr><td>${k}</td><td>${v}</td></tr>`).join('')}
+    </table>`;
+  }
+
+  function tags(arr, type) {
+    if (!arr || !arr.length) return '<span style="color:var(--muted);font-size:0.8rem">None listed</span>';
+    return `<div class="tags">${arr.map(t => `<span class="tag ${type}">${t}</span>`).join('')}</div>`;
+  }
+
+  function harmPanel(item) {
+    if (!item.substanceHarms || !item.substanceHarms.length) return '';
+    return `
+      <div class="harm-alert">
+        <div class="harm-alert-title">☣️ What's Actually Harming You</div>
+        <div class="substance-list">
+          ${item.substanceHarms.map(s => `
+            <div class="substance-item">
+              <div class="substance-name">
+                ⚗️ ${s.name}
+                ${s.banned ? '<span class="banned-tag">🚫 BANNED in some countries</span>' : ''}
+              </div>
+              <div class="substance-harm">${s.harm}</div>
+            </div>`).join('')}
+        </div>
+      </div>`;
+  }
+
+  function renderModalCard(item, cat) {
+    const isHarmful = item.harmful === true;
+    const hasWarnings = item.warnings && item.warnings.length;
+    const hasBenefits = item.benefits && item.benefits.length;
+    const hasDeficiencies = item.deficiencies && item.deficiencies.length;
+    ddCounter = 0;
+
+    let bodyContent = '';
+    if (isHarmful) {
+      bodyContent = [
+        dropdown('📊', 'Nutrition Facts', nutritionTable(item.nutrition)),
+        hasBenefits ? dropdown('✅', 'Benefits', tags(item.benefits, 'benefit')) : '',
+        hasWarnings ? dropdown('⚠️', 'Health Warnings', tags(item.warnings, 'warning')) : '',
+        hasDeficiencies ? dropdown('💊', 'Deficiencies It Helps Cure', tags(item.deficiencies, 'deficiency')) : '',
+      ].join('');
+    } else {
+      bodyContent = `
+        ${hasBenefits ? `<div class="inline-section"><div class="inline-label">✅ Benefits</div>${tags(item.benefits, 'benefit')}</div>` : ''}
+        ${hasDeficiencies ? `<div class="inline-section"><div class="inline-label">💊 Deficiencies It Helps Cure</div>${tags(item.deficiencies, 'deficiency')}</div>` : ''}
+        ${hasWarnings ? `<div class="inline-section"><div class="inline-label">⚠️ Notes</div>${tags(item.warnings, 'warning')}</div>` : ''}
+        ${dropdown('📊', 'Nutrition Facts', nutritionTable(item.nutrition))}`;
+    }
+
+    const imgHtml = item.image && item.image.startsWith('http')
+      ? `<img src="${item.image}" alt="${item.name}" onerror="this.parentElement.innerHTML='🥦'" />`
+      : item.image;
+
+    return `
+      <div class="modal-header">
+        <div class="modal-title-row">
+          <div class="item-emoji">${imgHtml}</div>
+          <div class="item-meta">
+            <h3>${item.name}</h3>
+            ${item.brand ? `<div class="brand">🏷️ ${item.brand}</div>` : ''}
+            <div class="calories">🔥 ${item.calories}</div>
+            <span class="badge ${isHarmful ? 'harmful' : 'healthy'}">${isHarmful ? '⚠️ Harmful' : '✅ Healthy'}</span>
+          </div>
+        </div>
+        <div class="modal-meta-row">
+          <span class="modal-cat-tag">${cat.icon} ${cat.name}</span>
+          <a href="category.html?cat=${cat.id}" class="modal-view-all">View all ${cat.name} →</a>
+        </div>
+        <button class="modal-close" onclick="closeModal()">✕</button>
+      </div>
+      ${isHarmful ? harmPanel(item) : ''}
+      <div class="item-body">${bodyContent}</div>`;
+  }
+
+  // ── Modal open/close ────────────────────────────────────────────
+  function openModal(itemName, catId) {
+    const cat = categories.find(c => c.id === catId);
+    const item = (items[catId] || []).find(i => i.name === itemName);
+    if (!item || !cat) { console.warn('Modal: item not found', itemName, catId); return; }
+
+    const box = document.getElementById('modalBox');
+    box.innerHTML = renderModalCard(item, cat);
+    document.getElementById('itemModal').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  window.closeModal = function() {
+    document.getElementById('itemModal').classList.remove('open');
+    document.body.style.overflow = '';
+  };
+
+  window.closeModalOutside = function(e) {
+    if (e.target === document.getElementById('itemModal')) closeModal();
+  };
+
+  window.toggleDD = function(id) {
+    document.getElementById(id).classList.toggle('open');
+  };
+
+  // close on Escape
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+  // ── Global search ───────────────────────────────────────────────
+  function handleGlobalSearch() {
+    const q = document.getElementById('globalSearch').value.trim().toLowerCase();
+    const resultsBox = document.getElementById('globalResults');
+    const clearBtn = document.getElementById('gsClear');
+    const catGrid = document.getElementById('categoryGrid');
+
+    clearBtn.style.display = q ? 'flex' : 'none';
+
+    if (!q) {
+      resultsBox.style.display = 'none';
+      catGrid.style.display = 'grid';
+      return;
+    }
+
+    catGrid.style.display = 'none';
+    const matches = [];
+    categories.forEach(cat => {
+      (items[cat.id] || []).forEach(item => {
+        if (item.name.toLowerCase().includes(q) || (item.brand && item.brand.toLowerCase().includes(q))) {
+          matches.push({ item, cat });
+        }
+      });
+    });
+
+    if (matches.length === 0) {
+      resultsBox.style.display = 'block';
+      resultsBox.innerHTML = `
+        <div class="gs-empty">
+          <div style="font-size:2.5rem;margin-bottom:0.75rem">🔍</div>
+          <p>No results for "<strong>${q}</strong>"</p>
+          <p style="font-size:0.82rem;margin-top:0.4rem;color:var(--muted)">Try a different name or brand</p>
+        </div>`;
+      return;
+    }
+
+    resultsBox.style.display = 'block';
+    resultsBox.innerHTML = `
+      <div class="gs-count">${matches.length} result${matches.length !== 1 ? 's' : ''} found</div>
+      <div class="gs-grid" id="gsGrid"></div>`;
+
+    // Build cards via DOM to avoid quote-escaping issues in onclick
+    const gsGrid = document.getElementById('gsGrid');
+    matches.forEach(({ item, cat }, idx) => {
+      const card = document.createElement('div');
+      card.className = `gs-card ${item.harmful ? 'harmful' : 'healthy'}`;
+      card.style.cursor = 'pointer';
+      card.innerHTML = `
+        <div class="gs-card-top">
+          <span class="gs-emoji">${item.image && item.image.startsWith('http')
+            ? `<img src="${item.image}" style="width:36px;height:36px;object-fit:cover;border-radius:8px" onerror="this.outerHTML='🥦'"/>`
+            : item.image}</span>
+          <div class="gs-info">
+            <div class="gs-name">${item.name}</div>
+            ${item.brand ? `<div class="gs-brand">🏷️ ${item.brand}</div>` : ''}
+            <div class="gs-cal">🔥 ${item.calories}</div>
+          </div>
+          <span class="gs-badge">${item.harmful ? '⚠️' : '✅'}</span>
+        </div>
+        <div class="gs-cat-tag">${cat.icon} ${cat.name}</div>`;
+      card.addEventListener('click', () => openModal(item.name, cat.id));
+      gsGrid.appendChild(card);
+    });
+  }
+
+  function clearGlobalSearch() {
+    document.getElementById('globalSearch').value = '';
+    document.getElementById('globalResults').style.display = 'none';
+    document.getElementById('gsClear').style.display = 'none';
+    document.getElementById('categoryGrid').style.display = 'grid';
+  }
+</script>
+</body>
+</html>
